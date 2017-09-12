@@ -57,7 +57,7 @@ include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := ffmpeg
-LOCAL_SRC_FILES := ffmpeg.c ffmpeg_opt.c cmdutils.c ffmpeg_filter.c
+LOCAL_SRC_FILES := $(wildcard $(LOCAL_PATH)/.c)
 LOCAL_LDLIBS := -llog
 LOCAL_SHARED_LIBRARIES := libavcodec libavdevice libavfilter libavformat libavresample libavutil libpostproc libswresample libswscale
 include $(BUILD_SHARED_LIBRARY)

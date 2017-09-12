@@ -49,21 +49,21 @@
 #include "libavutil/samplefmt.h"
 #include "libavutil/fifo.h"
 #include "libavutil/hwcontext.h"
-// #include "libavutil/internal.h"
+#include "libavutil/internal.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/dict.h"
 #include "libavutil/display.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/avstring.h"
-// #include "libavutil/libm.h"
+#include "libavutil/libm.h"
 #include "libavutil/imgutils.h"
 #include "libavutil/timestamp.h"
 #include "libavutil/bprint.h"
 #include "libavutil/time.h"
 #include "libavutil/threadmessage.h"
-// #include "libavcodec/mathops.h"
-// #include "libavformat/os_support.h"
+#include "libavcodec/mathops.h"
+#include "libavformat/os_support.h"
 
 # include "libavfilter/avfilter.h"
 # include "libavfilter/buffersrc.h"
@@ -1070,12 +1070,9 @@ static void do_video_out(OutputFile *of,
 
     if (!next_picture) {
         //end, flushing
-        /* nb0_frames = nb_frames = mid_pred(ost->last_nb0_frames[0],
+        nb0_frames = nb_frames = mid_pred(ost->last_nb0_frames[0],
                                           ost->last_nb0_frames[1],
                                           ost->last_nb0_frames[2]);
-                                          */
-        nb0_frames = nb_frames = 0;
-
     } else {
         delta0 = sync_ipts - ost->sync_opts; // delta0 is the "drift" between the input frame (next_picture) and where it would fall in the output.
         delta  = delta0 + duration;
@@ -1251,13 +1248,13 @@ static void do_video_out(OutputFile *of,
             ost->forced_keyframes_expr_const_values[FKF_T] = pts_time;
             res = av_expr_eval(ost->forced_keyframes_pexpr,
                                ost->forced_keyframes_expr_const_values, NULL);
-            /*ff_dlog(NULL, "force_key_frame: n:%f n_forced:%f prev_forced_n:%f t:%f prev_forced_t:%f -> res:%f\n",
+            ff_dlog(NULL, "force_key_frame: n:%f n_forced:%f prev_forced_n:%f t:%f prev_forced_t:%f -> res:%f\n",
                     ost->forced_keyframes_expr_const_values[FKF_N],
                     ost->forced_keyframes_expr_const_values[FKF_N_FORCED],
                     ost->forced_keyframes_expr_const_values[FKF_PREV_FORCED_N],
                     ost->forced_keyframes_expr_const_values[FKF_T],
                     ost->forced_keyframes_expr_const_values[FKF_PREV_FORCED_T],
-                    res); */
+                    res);
             if (res) {
                 forced_keyframe = 1;
                 ost->forced_keyframes_expr_const_values[FKF_PREV_FORCED_N] =
@@ -4800,25 +4797,4 @@ int main(int argc, char **argv)
 
     exit_program(received_nb_signals ? 255 : main_return_code);
     return main_return_code;
-}
-
-static inline av_const int mid_pred(int a, int b, int c)
-{
-    int m;
-    __asm__ (
-        "mov   %0, %2  \n\t"
-        "cmp   %1, %2  \n\t"
-        "itt   gt      \n\t"
-        "movgt %0, %1  \n\t"
-        "movgt %1, %2  \n\t"
-        "cmp   %1, %3  \n\t"
-        "it    le      \n\t"
-        "movle %1, %3  \n\t"
-        "cmp   %0, %1  \n\t"
-        "it    gt      \n\t"
-        "movgt %0, %1  \n\t"
-        : "=&r"(m), "+r"(a)
-        : "r"(b), "r"(c)
-        : "cc");
-    return m;
 }

@@ -44,7 +44,7 @@
 #include "libavutil/display.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/imgutils.h"
-// #include "libavutil/libm.h"
+#include "libavutil/libm.h"
 #include "libavutil/parseutils.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/eval.h"
@@ -54,9 +54,9 @@
 #include "libavutil/ffversion.h"
 #include "libavutil/version.h"
 #include "cmdutils.h"
-// #if CONFIG_NETWORK
-// #include "libavformat/network.h"
-// #endif
+#if CONFIG_NETWORK
+#include "libavformat/network.h"
+#endif
 #if HAVE_SYS_RESOURCE_H
 #include <sys/time.h>
 #include <sys/resource.h>
